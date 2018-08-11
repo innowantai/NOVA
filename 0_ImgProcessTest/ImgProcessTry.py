@@ -19,7 +19,7 @@ fgbg = cv2.createBackgroundSubtractorMOG2()
 kernel = np.ones((11,11),np.uint8)
 
 
-for ii in range(150):
+for ii in range(2):
         
     
     ret, frame = cap.read()
@@ -31,8 +31,8 @@ for ii in range(150):
     
     cv2.imwrite(os.path.join(savePath,'test' + str(ii) + '.png'),thresh)   
     cv2.imwrite(os.path.join(savePath,'test' + str(ii) + 'Ori.png'),frame)   
-    if ii == 60:
-        oriFig = thresh
+    if ii == 0:
+        oriFig = frame
     
     
 

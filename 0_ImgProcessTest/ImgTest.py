@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import os
 import time
 
-
-
 oriPath = os.getcwd()
 thisFolderName = os.path.split(oriPath)[1]
 topPath = oriPath.split('\\Code')[0]
@@ -86,8 +84,14 @@ while(cap.isOpened()):
     ret,fgmask = cv2.threshold(fgmask,20,255,cv2.THRESH_BINARY)                #Threshold
     fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)                  #Morphological transformations-open
     fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)                 #Morphological transformations-close
-     
     
+    if ii == 1:
+        old = fgmask
+        print('stopping')
+        break
+
+    ii = ii + 1
+    oldroad = road
     car = cv2.bitwise_and(road,road,mask = fgmask)                             #get car real images
 
     fgmask_inv = cv2.bitwise_not(fgmask)                                       #inverse car mask
@@ -99,7 +103,7 @@ while(cap.isOpened()):
     image, contours, hierarchy = cv2.findContours(fgmask.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #contour
 
     
-    
+    print(len(contours))
     car_contour1=road.copy()
     car_contour1 = cv2.drawContours(car_contour1, contours, -1, (0,255,0), 3)  #draw car contour 
 
@@ -132,8 +136,8 @@ while(cap.isOpened()):
     #cv2.imshow('car_contour3',car_contour3)
     cv2.imshow('car_contour4',car_contour4)
     #cv2.imshow('carBoundary',carBoundary)
-    print(len(contours))
-    time.sleep(0)
+
+    time.sleep(1)
     k = cv2.waitKey(20) & 0xff
     if k == 27:
         break
