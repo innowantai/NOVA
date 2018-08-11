@@ -42,6 +42,7 @@ def CatchingTargetVideo(targets):
 # =============================================================================
 #     try:
 # =============================================================================
+    shHeadPoint = 0
     while(cap.isOpened()):
         ii = ii + 1 
         ret, frame = cap.read()
@@ -50,7 +51,7 @@ def CatchingTargetVideo(targets):
             
         for po in range(ll): 
             target = targets[po + 1] 
-            if ii == st[target] - 100 :
+            if ii == st[target] - shHeadPoint :
                 saveName = os.path.join(saveFolderPath,fileName + '_' + str(target)  + "_" + str(st[target]) + '.avi')
                 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
                 out = cv2.VideoWriter(saveName, fourcc, 25.0, (640, 480))
@@ -58,11 +59,12 @@ def CatchingTargetVideo(targets):
                 break
             
          
-        if ii >= st[checkTarget] - 100 :#and ii <= end[checkTarget]: 
+        if ii >= st[checkTarget] - shHeadPoint :#and ii <= end[checkTarget]: 
+            print(ii)
             out.write(frame)
             #cv2.imshow('frame',frame)   
             
-        if ii >= st[checkTarget] + 2000:
+        if ii >= end[checkTarget] : #st[checkTarget] + 2000  : 
             out.release()
         
         if ii >= st[targets[-1]]+2000:

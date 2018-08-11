@@ -74,62 +74,65 @@ def loadData(fileName):
     return data
 
 
+
+
 oriPath = os.getcwd()
 thisFolderName = os.path.split(oriPath)[1]
 topPath = oriPath.split('\\Code')[0]
 filesFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName)
 
- 
-fileName = '11550002_mpeg4'
-cap = cv2.VideoCapture(os.path.join(filesFolderPath,fileName  +'.avi'))
-fps = cap.get(cv2.CAP_PROP_FPS)
-st, end = loadStEnd(fileName + '.txt')
-resData = loadData(fileName + '_data.txt')
 
-#### 22250023_mpeg4 2 火車
 
-checkTarget = 0
-
-fgbg = cv2.createBackgroundSubtractorMOG2()
-kernel = np.ones((11,11),np.uint8)
-hh = int(fileName[0:2])
-mm = int(fileName[2:4])
-ss = 30
-
-if hh >= 19 or hh < 11:
-    judge = 22000        
-else:            
-    judge = 15000
-
-judge = 24000
-  
-ii = 0
-flag = 0;
-data = []
-stPo = []
-endPo = []
-MAXCOUNT = 999999999999
-lastCount = MAXCOUNT
-count = 0 
 blur = 1
 
-try:
-    while(cap.isOpened()):
-        ii = ii + 1 
-        ret, frame = cap.read()
-        #road=frame[130:230,250:520] 
-        #road = frame    
+
+files_ = os.listdir(filesFolderPath)
+files = []
+for ff in files_:
+    if ff.find('.avi') != -1:
+        files.append(ff)
         
-        ss,mm,hh = timesCount(ss,mm,hh,ii)
-        print(ii,count,len(stPo),len(endPo),hh,mm,ss)  
-        if ii >= st[checkTarget] - 100 :#and ii <= end[checkTarget]:   
-            road=frame[120:210,250:520]   
-            car,pcar,car_contour4,fgmask,contours = ImageProcess_sub(road,frame,ii,blur)         
+        
+for FILENAME in files:
+    
+    fileName = FILENAME.split('.')[0] 
+    cap = cv2.VideoCapture(os.path.join(filesFolderPath,fileName  +'.avi')) 
+    fps = cap.get(cv2.CAP_PROP_FPS) 
+    
+    fgbg = cv2.createBackgroundSubtractorMOG2()
+    kernel = np.ones((11,11),np.uint8)
+    hh = int(fileName[0:2])
+    mm = int(fileName[2:4])
+    ss = 30
+     
+    judge = 24000
+      
+    ii = 0
+    flag = 0;
+    data = []
+    stPo = []
+    endPo = []
+    MAXCOUNT = 999999999999
+    lastCount = MAXCOUNT 
+    blur = 1
+    
+    try:
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            ii = ii + 1 
+                 
+            #road=frame[130:230,250:520] 
+            road=frame[120:210,250:520] 
+            #road= frame 
+             
+            
+            ss,mm,hh = timesCount(ss,mm,hh,ii)
+            car,pcar,car_contour4,fgmask,contours = ImageProcess_sub(road,frame,ii,blur)  
+         
             count = len(np.where(pcar == 0)[0])
-            data.append(count)          
-            cv2.imshow('car',car)
-            cv2.imshow('pcar',pcar)
-            cv2.imshow('car_contour4',car_contour4)   
+            data.append(count)
+            print(ii,count,len(stPo),len(endPo),hh,mm,ss)
+            
              
         
             if count < judge:
@@ -144,17 +147,31 @@ try:
             if ii >= 25 and  lastCount < judge and count > judge:
                 endPo.append(ii)
                 lastCount = MAXCOUNT
+                
             
+            k = cv2.waitKey(20) & 0xff
+            if k == 27:
+                break
         
-        k = cv2.waitKey(20) & 0xff
-        if k == 27:
-            break
+    except:
+        pass;
     
-except: 
-    pass;
- 
     
-cap.release()
-cv2.destroyAllWindows()
-
- 
+    
+        
+        
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    
+    
+    
+    
+    
+    with open(fileName + '.txt','w') as f:
+        for it,ff in enumerate(stPo):
+            f.writelines(str(stPo[it]) + ',' + str(endPo[it]) + '\n' )
+    
+    with open(fileName + '_data.txt','w') as f:
+        for ff in data:
+            f.writelines(str(ff) + '\n' )

@@ -48,7 +48,7 @@ def GetTimes(fileName):
         index1 = stPo[it]
         index2 = endPo[it]
         index3 = (index2 - index1) / 25 
-        if index3 >= 1:
+        if index3 >= 2:
             iters.append(it)
             diff.append(index3)
             res = timeTrans(index1 / 25 + oriss)

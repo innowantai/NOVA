@@ -6,6 +6,7 @@ import time
 
 
 
+
 oriPath = os.getcwd()
 thisFolderName = os.path.split(oriPath)[1]
 topPath = oriPath.split('\\Code')[0]
@@ -66,11 +67,11 @@ for FILENAME in files:
                 mm = mm + 1
                 ss = 0
                 
-            if mm % 60 == 0:
+            if mm % 60 == 0 and mm != 0:
                 hh = hh + 1
                 mm = 0 
             
-            fgmask = cv2.GaussianBlur(fgmask,(1,1),0)                                  #GaussianBlue
+            fgmask = cv2.GaussianBlur(fgmask,(1,1),1)                                  #GaussianBlue
             ret,fgmask = cv2.threshold(fgmask,20,255,cv2.THRESH_BINARY)                #Threshold
             fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)                  #Morphological transformations-open
             fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)                 #Morphological transformations-close

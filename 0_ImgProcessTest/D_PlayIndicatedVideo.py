@@ -77,14 +77,16 @@ def loadData(fileName):
 oriPath = os.getcwd()
 thisFolderName = os.path.split(oriPath)[1]
 topPath = oriPath.split('\\Code')[0]
-filesFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName)
+filesFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName,'ForCheck')
 
  
-fileName = '11550002_mpeg4'
+fileName = '18550016_mpeg4_21_32802'
 cap = cv2.VideoCapture(os.path.join(filesFolderPath,fileName  +'.avi'))
 fps = cap.get(cv2.CAP_PROP_FPS)
-st, end = loadStEnd(fileName + '.txt')
-resData = loadData(fileName + '_data.txt')
+txtFileName = fileName.split('_')
+txtFileName = txtFileName[0] + '_' + txtFileName[1]
+st, end = loadStEnd(txtFileName + '.txt')
+resData = loadData(txtFileName + '_data.txt')
 
 #### 22250023_mpeg4 2 火車
 
@@ -110,7 +112,8 @@ stPo = []
 endPo = []
 MAXCOUNT = 999999999999
 lastCount = MAXCOUNT
-count = 0 
+
+
 blur = 1
 
 try:
@@ -120,37 +123,36 @@ try:
         #road=frame[130:230,250:520] 
         #road = frame    
         
-        ss,mm,hh = timesCount(ss,mm,hh,ii)
-        print(ii,count,len(stPo),len(endPo),hh,mm,ss)  
-        if ii >= st[checkTarget] - 100 :#and ii <= end[checkTarget]:   
-            road=frame[120:210,250:520]   
-            car,pcar,car_contour4,fgmask,contours = ImageProcess_sub(road,frame,ii,blur)         
-            count = len(np.where(pcar == 0)[0])
-            data.append(count)          
-            cv2.imshow('car',car)
-            cv2.imshow('pcar',pcar)
-            cv2.imshow('car_contour4',car_contour4)   
-             
+        ss,mm,hh = timesCount(ss,mm,hh,ii)   
+        road=frame[120:210,250:520]   
+        car,pcar,car_contour4,fgmask,contours = ImageProcess_sub(road,frame,ii,blur)          
+        count = len(np.where(pcar == 0)[0])
+        data.append(count)          
+        cv2.imshow('car',car)
+        cv2.imshow('pcar',pcar)
+        cv2.imshow('car_contour4',car_contour4)   
+         
         
-            if count < judge:
-                flag = flag + 1
-            else:
-                flag = 0
+        print(ii,count,len(stPo),len(endPo),hh,mm,ss)  
+        if count < judge:
+            flag = flag + 1
+        else:
+            flag = 0
+        
+        if ii >= 25 and count < judge and flag >= 10 and lastCount == MAXCOUNT: 
+            stPo.append(ii)
+            lastCount = count 
             
-            if ii >= 25 and count < judge and flag >= 10 and lastCount == MAXCOUNT: 
-                stPo.append(ii)
-                lastCount = count  
-                
-            if ii >= 25 and  lastCount < judge and count > judge:
-                endPo.append(ii)
-                lastCount = MAXCOUNT
+        if ii >= 25 and  lastCount < judge and count > judge:
+            endPo.append(ii)
+            lastCount = MAXCOUNT
             
         
         k = cv2.waitKey(20) & 0xff
         if k == 27:
             break
     
-except: 
+except:
     pass;
  
     
