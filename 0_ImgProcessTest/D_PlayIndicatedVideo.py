@@ -80,15 +80,14 @@ topPath = oriPath.split('\\Code')[0]
 filesFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName,'ForCheck')
 
  
-fileName = '18550016_mpeg4_21_32802'
+fileName = '11550002_mpeg4_11_26447'
 cap = cv2.VideoCapture(os.path.join(filesFolderPath,fileName  +'.avi'))
 fps = cap.get(cv2.CAP_PROP_FPS)
 txtFileName = fileName.split('_')
 txtFileName = txtFileName[0] + '_' + txtFileName[1]
 st, end = loadStEnd(txtFileName + '.txt')
 resData = loadData(txtFileName + '_data.txt')
-
-#### 22250023_mpeg4 2 火車
+ 
 
 checkTarget = 0
 
@@ -131,7 +130,7 @@ try:
         cv2.imshow('car',car)
         cv2.imshow('pcar',pcar)
         cv2.imshow('car_contour4',car_contour4)   
-         
+        
         
         print(ii,count,len(stPo),len(endPo),hh,mm,ss)  
         if count < judge:

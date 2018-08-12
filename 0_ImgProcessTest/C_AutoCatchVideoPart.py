@@ -42,7 +42,7 @@ def CatchingTargetVideo(targets):
 # =============================================================================
 #     try:
 # =============================================================================
-    shHeadPoint = 0
+    shHeadPoint = 25
     while(cap.isOpened()):
         ii = ii + 1 
         ret, frame = cap.read()
@@ -59,8 +59,7 @@ def CatchingTargetVideo(targets):
                 break
             
          
-        if ii >= st[checkTarget] - shHeadPoint :#and ii <= end[checkTarget]: 
-            print(ii)
+        if ii >= st[checkTarget] - shHeadPoint :#and ii <= end[checkTarget]:  
             out.write(frame)
             #cv2.imshow('frame',frame)   
             
@@ -83,8 +82,60 @@ def CatchingTargetVideo(targets):
 #         pass
 # =============================================================================
         
-    
-    
+
+def GetTheTargetOfNGCase(fileName): 
+    data = []
+    Targets = []
+    re = []
+    flag = 0
+    with open(fileName,'r') as f:
+        data_ = f.readline()
+        while data_ != "": 
+            index = data_.split(' ')
+            if flag == 1 and data_.find('_') != -1:
+                Targets.append(data) 
+                data = []
+                
+            if data_.find('_') != -1:
+                flag = 0
+                
+            if data_.find('**') != -1 :
+                flag = 1
+                data.append(index[0])  
+                 
+            if flag == 1 and data_.find('--') != -1:
+                data.append(int(index[0]))   
+            re.append(data_)
+            data_ = f.readline(); 
+    return Targets, re
+
+def GetTheTargetOfOKCase(fileName): 
+    data = []
+    Targets = []
+    re = []
+    flag = 0
+    with open(fileName,'r') as f:
+        data_ = f.readline()
+        while data_ != "": 
+            index = data_.split(' ')
+            if flag == 1 and data_.find('_') != -1:
+                if len(data) > 1:                        
+                    Targets.append(data) 
+                data = []
+                
+            if data_.find('_') != -1:
+                flag = 0
+                
+            if data_.find('_') != -1 :
+                flag = 1
+                data.append(index[0].split('\n')[0])  
+                 
+            if flag == 1 and data_.find('--') == -1 and data_.find(':') != -1:
+                data.append(int(index[0]))   
+            re.append(data_)
+            data_ = f.readline(); 
+    return Targets, re
+
 
 oriPath = os.getcwd()
 thisFolderName = os.path.split(oriPath)[1]
@@ -92,41 +143,10 @@ topPath = oriPath.split('\\Code')[0]
 filesFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName)
 saveFolderPath = os.path.join(topPath,'RelatedFiles',thisFolderName,'ForCheck')
  
-
-
-
-
-Targetss = ( 
-        ['18550016_mpeg4',15,20,21,22,29,30,31,33],
-        ['22250023_mpeg4',0,1,6],
-        ['22550024_mpeg4',1,2],
-        )
-  
-Targets = []
-data = []
-fileName = '0_Res_p.txt'
-flag = 0
-with open(fileName,'r') as f:
-    data_ = f.readline()
-    while data_ != "": 
-        index = data_.split(' ')
-        if flag == 1 and data_.find('_') != -1:
-            Targets.append(data)
-            data = []
-        if data_.find('_') != -1:
-            flag = 0
-            
-        if data_.find('**') != -1 :
-            flag = 1
-            data.append(index[0]) 
-            
-        if flag == 1 and data_.find('--') != -1:
-            data.append(int(index[0])) 
-        data_ = f.readline(); 
+ 
         
-        
-        
-
+fileName_= '0_Res_p.txt'
+Targets ,data_= GetTheTargetOfOKCase(fileName_)
 for targets in Targets:
     
     fileName = targets[0]
